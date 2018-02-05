@@ -1,15 +1,22 @@
 package ninja.genuine.tooltips.client;
 
+import java.lang.reflect.Field;
 import java.util.List;
+
+import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ninja.genuine.tooltips.Constants;
 import ninja.genuine.tooltips.client.config.Config;
@@ -78,6 +85,25 @@ public class RenderEvent {
 			}
 		}
 		mc.mcProfiler.endSection();
+		
+		// Support for HolographicDisplays
+		if (out != null && out.getItem().hasTagCompound()) {
+			if (out.getItem().getTagCompound().hasKey("display")) {
+				NBTTagCompound nbt = out.getItem().getTagCompound().getCompoundTag("display");
+				if (nbt.hasKey("Lore")) {
+                    NBTTagList lore = nbt.getTagList("Lore", 8);
+                    if (lore.tagCount() == 1) {
+                    	try {
+                    		Double.valueOf(lore.get(0).toString().replaceAll("\"|¡ì0", ""));
+                    		return null;
+                    	}
+                    	catch (Exception e) {
+							//
+						}
+                    }
+                }
+			}
+		}
 		return out;
 	}
 }
