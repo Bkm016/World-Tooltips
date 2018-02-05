@@ -91,17 +91,17 @@ public class RenderEvent {
 			if (out.getItem().getTagCompound().hasKey("display")) {
 				NBTTagCompound nbt = out.getItem().getTagCompound().getCompoundTag("display");
 				if (nbt.hasKey("Lore")) {
-                    NBTTagList lore = nbt.getTagList("Lore", 8);
-                    if (lore.tagCount() == 1) {
-                    	try {
-                    		Double.valueOf(lore.get(0).toString().replaceAll("\"|¡ì0", ""));
-                    		return null;
-                    	}
-                    	catch (Exception e) {
+					NBTTagList lore = nbt.getTagList("Lore", 8);
+					if (lore.tagCount() == 1) {
+						try {
+							Double.valueOf(ChatFormatting.stripFormatting(lore.get(0).toString().replace("\"", "")));
+							return null;
+						}
+						catch (Exception e) {
 							//
 						}
-                    }
-                }
+					}
+				}
 			}
 		}
 		return out;
